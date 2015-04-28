@@ -10,21 +10,32 @@ Install [jack](https://github.com/overtone/overtone/wiki/Installing-and-starting
 
 ## Playing
 
-### Calvin Harris - Let's Go
-
 `lein repl`
+
+### Calvin Harris - Let's Go
 
 ```clojure
 (use 'overtone.live)
 (use 'overtone-workshop.letsgo)
-(play-all (metronome 128))
+(play-all)
 (stop)
 ```
+
+### Ellie Goulding - Lights
+
+```clojure
+(use 'overtone.live)
+(use 'overtone-workshop.lights)
+(play-all)
+(stop)
+```
+
 
 ## Inspirations
 
 * [Syntorial](http://www.syntorial.com/)
 * [Calvin Harris "Lets Go" - Making The Beat](https://www.youtube.com/watch?v=wtGtnshXIU0)
+* [Ellie Goulding "Lights" - Making The Beat](https://www.youtube.com/watch?v=A_TiZhgQ9Fw)
 
 ## License
 
