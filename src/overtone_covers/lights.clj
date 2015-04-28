@@ -32,18 +32,48 @@
 
 (defn play-bouncy [_] (partial bouncy))
 
-(def kick (sample "resources/lights/kick.wav"))
-(def snare (sample "resources/lights/snare.wav"))
+(def kick   (sample "resources/lights/kick.wav"))
+(def snare  (sample "resources/lights/snare.wav"))
+(def shaker (sample "resources/lights/shaker.wav"))
+(def tom    (sample "resources/lights/tom_flat.wav"))
+(def crash  (sample "resources/lights/crash.wav"))
 
-(defn beat-player [nome beat]
-  (let [next-beat (+ 2 beat)]
-    (at (nome beat) (kick))
-    (at (nome (inc beat)) (do (kick) (snare)))
-    (apply-by (nome next-beat) beat-player [nome next-beat])))
+(def _ 0)
+(def none (repeat 16 _))
+
+(def pattern1
+  {kick   [1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _]
+   snare  [_ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _]
+   shaker [_ _ _ _ 1 _ _ _ _ _ _ _ 1 _ _ _]
+   crash  [1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _]
+   tom none})
+
+(def pattern2
+  {kick   [1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _]
+   snare  [_ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _]
+   shaker [_ _ _ _ 1 _ _ _ _ _ _ _ 1 _ _ _]
+   tom    [_ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _]
+   crash  none})
+
+(def pattern3
+  {kick   [1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _]
+   snare  [_ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _]
+   shaker [_ _ _ _ 1 _ _ _ _ _ _ _ 1 _ _ _]
+   tom none crash none})
+
+(def pattern4
+  {kick   [1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _]
+   snare  [_ _ _ _ _ _ _ _ 1 _ _ _ _ _ 1 _]
+   shaker [_ _ _ _ 1 _ _ _ _ _ _ _ 1 _ _ _]
+   tom none crash none})
+
+(def patterns
+  (apply (partial merge-with concat)
+         (flatten (vector pattern1 pattern2 (repeat 2 [pattern3 pattern2]) pattern3 pattern4))))
 
 (comment
   (let [nome (metronome 120) beat (nome)]
-    (beat-player nome beat)
+    (sequencer nome patterns 1/8 0 beat)
     (player lights {} nome beat play-bouncy 16 64)
     (player lights-bass lights-bass-control nome beat play-bass 16 64))
   (stop))
