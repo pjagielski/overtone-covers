@@ -28,3 +28,14 @@
 
 (def letsgo-bass-ctrl
   {11 shrt 12 shrt 14 shrt 27 shrt 30 shrt 43 shrt 46 shrt 57 shrt 59 shrt 62 shrt})
+
+(def lights
+  {0 [:G#3 :B4] 3 [:B4] 6 [:G#3 :B4] 8 [:G#4] 11 [:D#4] 14 [:F#3 :B4] 16 [:A#4] 17 [:A#4] 19 [:A#4] 20 [:F#3] 22 [:F#4] 25 [:C#4] 28 [:F#4] 32 [:E3 :B4] 35 [:B4] 38 [:E3 :B4] 40 [:G#4] 43 [:E4] 46 [:C#3 :B4] 49 [:G#4] 52 [:E4] 54 [:C#3 :B4] 57 [:G#4] 60 [:E4]})
+
+(def lights-bass
+  {0 [:G#2] 14 [:F#2] 32 [:E2] 46 [:C#2]})
+
+(def lights-bass-control
+  {0  {:sustain 1.7 :release 0.3} 14 {:sustain 2.2 :release 0.3}
+   32 {:sustain 1.7 :release 0.3} 46 {:sustain 2.2 :release 0.3}})
+
