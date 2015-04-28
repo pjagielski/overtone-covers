@@ -7,8 +7,7 @@
   (let [freq  (midicps note)
         freq2 (midicps (- note 0.08))
         freq3 (midicps (+ note 0.20))
-        freq4 (midicps (+ note 0.48))
-        osc   (saw [freq freq2 freq3 freq4])
+        osc   (saw [freq freq2 freq3])
         sub   (lpf (pulse (* freq 0.5) 0.3) 500)
         osc   (+ (* sub-gate sub) (* amp osc))
         mix   (mix osc)
@@ -65,15 +64,14 @@
     (partial bass :sustain sustain)
     (partial bass)))
 
-(def nome (metronome 128))
-
-(defn play-all [nome]
-  (let [beat (nome)]
+(defn play-all []
+  (let [nome (metronome 128) beat (nome)]
       (beat-player nome beat)
       (noise-player nome beat)
       (player letsgo {} nome beat play-lead 16 64)
       (player letsgo-bass letsgo-bass-ctrl nome beat play-bass 16 64)))
 
 (comment
-  (play-all nome)
+  (play-all)
   (stop))
+

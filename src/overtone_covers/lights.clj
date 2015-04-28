@@ -69,11 +69,16 @@
 
 (def patterns
   (apply (partial merge-with concat)
-         (flatten (vector pattern1 pattern2 (repeat 2 [pattern3 pattern2]) pattern3 pattern4))))
+         (flatten (vector pattern1 pattern2
+                          (repeat 2 [pattern3 pattern2])
+                          pattern3 pattern4))))
+(defn play-all []
+  (let [nome (metronome 120) beat (nome)]
+      (sequencer nome patterns 1/8 0 beat)
+      (player lights {} nome beat play-bouncy 16 64)
+      (player lights-bass lights-bass-control nome beat play-bass 16 64)))
 
 (comment
-  (let [nome (metronome 120) beat (nome)]
-    (sequencer nome patterns 1/8 0 beat)
-    (player lights {} nome beat play-bouncy 16 64)
-    (player lights-bass lights-bass-control nome beat play-bass 16 64))
+  (play-all)
   (stop))
+
