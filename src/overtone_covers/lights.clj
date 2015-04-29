@@ -20,10 +20,26 @@
         src  (rlpf osc (lin-exp cutoff 0.0 1.0 20.0 20000.0) 0.15)
         src  (* src (env-gen (perc) :action FREE))
         del  (comb-n src 2 0.25 8)
-        src  (+ src del)
         fad  (x-fade2 src del (- (* mix 2) 1) 1)
+        src  (+ src fad)
         env  (env-gen (perc :release release) :action FREE)]
    (pan2 (* env amp src))))
+
+(defsynth fx-echo-amp [bus 0 max-delay 1.0 delay-time 0.4 decay-time 2.0 amp 0.5]
+  (let [source (in bus)
+        echo (comb-n source max-delay delay-time decay-time)]
+    (replace-out bus (pan2 (+ (* amp echo) source) 0))))
+
+(comment
+  (def echo (inst-fx! bass fx-echo-amp))
+  (ctl echo :delay-time 0.07 :decay-time 0.2 :amp 0.35))
+
+(def brvb (inst-fx! bouncy fx-freeverb))
+(ctl brvb :room-size 0.7)
+
+(comment
+  (clear-fx bouncy)
+  (clear-fx bass))
 
 (defn play-bass [step-ctl]
   (if-let [sustain (get step-ctl :sustain)]
@@ -72,6 +88,7 @@
          (flatten (vector pattern1 pattern2
                           (repeat 2 [pattern3 pattern2])
                           pattern3 pattern4))))
+
 (defn play-all []
   (let [nome (metronome 120) beat (nome)]
       (sequencer nome patterns 1/8 0 beat)
