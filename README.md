@@ -34,8 +34,8 @@ Install [jack](https://github.com/overtone/overtone/wiki/Installing-and-starting
 ## Inspirations
 
 * [Syntorial](http://www.syntorial.com/)
-* [Calvin Harris "Lets Go" - Making The Beat](https://www.youtube.com/watch?v=wtGtnshXIU0)
-* [Ellie Goulding "Lights" - Making The Beat](https://www.youtube.com/watch?v=A_TiZhgQ9Fw)
+* [Calvin Harris "Lets Go"](https://www.youtube.com/watch?v=wtGtnshXIU0)
+* [Ellie Goulding "Lights"](https://www.youtube.com/watch?v=A_TiZhgQ9Fw)
 
 ## License
 
