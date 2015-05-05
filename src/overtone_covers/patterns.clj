@@ -39,3 +39,6 @@
   {0  {:sustain 1.7 :release 0.3} 14 {:sustain 2.2 :release 0.3}
    32 {:sustain 1.7 :release 0.3} 46 {:sustain 2.2 :release 0.3}})
 
+(def lights-strings
+  {0 [:G#4 :B4 :D#4] 14 [:C#4 :F#4 :A#4] 32 [:E4 :G#4 :B4] 46 [:E4 :G#4 :B4]})
+

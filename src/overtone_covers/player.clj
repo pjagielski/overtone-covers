@@ -1,9 +1,12 @@
 (ns overtone-covers.player
   (:use [overtone.live]))
 
+(defn to-vec [m]
+  (interleave (keys m) (vals m)))
+
 (defn play-step [step idx start chord step-ctrl synth-fn]
   (dorun (for [n chord]
-    (apply-at (+ (* step idx) start) #(apply (synth-fn step-ctrl) [:note (note n)]) []))))
+    (apply-at (+ (* step idx) start) #(apply synth-fn (concat (to-vec step-ctrl) [:note (note n)])) []))))
 
 (defn player [pattern pattern-ctrl nome beat synth-fn beats resolution]
   (let [t (nome beat)

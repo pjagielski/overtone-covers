@@ -6,15 +6,30 @@
 (definst lead [note 60 release 0.30 amp 0.3 sub-gate 0.3]
   (let [freq  (midicps note)
         freq2 (midicps (- note 0.08))
-        freq3 (midicps (+ note 0.20))
-        osc   (saw [freq freq2 freq3])
+        freq3 (midicps (+ note 0.22))
+        freq4 (midicps (+ note 0.40))
+        osc   (saw [freq freq2 freq3 freq4])
         sub   (lpf (pulse (* freq 0.5) 0.3) 500)
         osc   (+ (* sub-gate sub) (* amp osc))
         mix   (mix osc)
         env   (env-gen (env-lin 0.015 0.20 release) :action FREE)]
     (pan2 (* mix env))))
 
-(comment (lead))
+(comment (lead :note 75))
+
+(defsynth fx-echo-amp [bus 0 max-delay 1.0 delay-time 0.4 decay-time 2.0 amp 0.5]
+  (let [source (in bus)
+        echo (comb-n source max-delay delay-time decay-time)]
+    (replace-out bus (pan2 (+ (* amp echo) source) 0))))
+
+(comment
+  (def echo (inst-fx! lead fx-echo-amp))
+  (ctl echo :delay-time 0.1 :decay-time 0.1 :amp 0.2))
+
+(comment
+  (def brvb (inst-fx! lead fx-freeverb))
+  (ctl brvb :room-size 0.6 :wet-dry 0.4 :dampening 0.4)
+  (clear-fx lead))
 
 (definst bass [note 60 amp 0.3 osc-mix 0.0 cutoff 0.35 sustain 0.2 release 0.15 fil-dec 0.85 fil-amt 1500]
   (let [freq (midicps note)
@@ -56,20 +71,12 @@
     (at (nome (+ 1.5 beat)) (tambo))
     (apply-by (nome next-beat) beat-player [nome next-beat])))
 
-(defn play-lead [step-ctl]
-  (partial lead))
-
-(defn play-bass [step-ctl]
-  (if-let [sustain (get step-ctl :sustain)]
-    (partial bass :sustain sustain)
-    (partial bass)))
-
 (defn play-all []
   (let [nome (metronome 128) beat (nome)]
       (beat-player nome beat)
       (noise-player nome beat)
-      (player letsgo {} nome beat play-lead 16 64)
-      (player letsgo-bass letsgo-bass-ctrl nome beat play-bass 16 64)))
+      (player letsgo {} nome beat #'lead 16 64)
+      (player letsgo-bass letsgo-bass-ctrl nome beat #'bass 16 64)))
 
 (comment
   (play-all)

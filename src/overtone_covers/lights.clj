@@ -10,11 +10,12 @@
         sub  (* sub-amp (pulse (/ freq 2)))
         snd  (mix [osc1 osc2 sub])
         fil-env (env-gen (adsr 0.1 0.5 0.1 0.2))
-        snd  (rlpf snd (+ (* fil-env (* contour 20000)) (lin-exp cutoff 0.0 1.0 20.0 20000.0)) 0.65)
+        snd  (rlpf snd (+ (* fil-env (* contour 20000))
+                          (lin-exp cutoff 0.0 1.0 20.0 20000.0)) 0.65)
         env  (env-gen (env-lin 0.01 sustain release) 1 1 0 1 FREE)]
     (pan2 (* snd env amp))))
 
-(definst bouncy [note 60 fine 0.12 del 0.4 amp 0.3 cutoff 0.50 release 2 mix 0.7]
+(definst bouncy [note 60 fine 0.12 del 0.4 amp 0.5 cutoff 0.50 release 2 mix 0.7]
   (let [freq (midicps (+ note fine))
         osc  (pulse freq 0.25)
         src  (rlpf osc (lin-exp cutoff 0.0 1.0 20.0 20000.0) 0.15)
@@ -32,7 +33,7 @@
 
 (comment
   (def echo (inst-fx! bass fx-echo-amp))
-  (ctl echo :delay-time 0.07 :decay-time 0.2 :amp 0.35))
+  (ctl echo :delay-time 0.04 :decay-time 0.2 :amp 0.35))
 
 (def brvb (inst-fx! bouncy fx-freeverb))
 (ctl brvb :room-size 0.7)
@@ -41,12 +42,15 @@
   (clear-fx bouncy)
   (clear-fx bass))
 
-(defn play-bass [step-ctl]
-  (if-let [sustain (get step-ctl :sustain)]
-    (partial bass :sustain sustain)
-    (partial bass)))
-
-(defn play-bouncy [_] (partial bouncy))
+(definst strings [note 60 sustain 1.7 release 0.4 amp 0.25 cutoff 0.1 contour 0.3]
+  (let [notes [note (- 0.22 note) (+ 0.14 note) (+ 0.40 note)]
+        freqs (map midicps notes)
+        src   (saw freqs)
+        fil-env (env-gen (adsr 0.1 0.9 0.1 0.6))
+        snd   (bpf src (+ (* fil-env (* contour 10000))
+                          (lin-exp cutoff 0.0 1.0 20.0 20000.0)))
+        env   (env-gen (env-lin 0.01 sustain release) 1 1 0 1 FREE)]
+    (out 0 (pan2 (* amp env snd)))))
 
 (def kick   (sample "resources/lights/kick.wav"))
 (def snare  (sample "resources/lights/snare.wav"))
@@ -92,8 +96,9 @@
 (defn play-all []
   (let [nome (metronome 120) beat (nome)]
       (sequencer nome patterns 1/8 0 beat)
-      (player lights {} nome beat play-bouncy 16 64)
-      (player lights-bass lights-bass-control nome beat play-bass 16 64)))
+      (player lights-strings lights-bass-control nome beat #'strings 16 64)
+      (player lights {} nome beat #'bouncy 16 64)
+      (player lights-bass lights-bass-control nome beat #'bass 16 64)))
 
 (comment
   (play-all)
