@@ -1,6 +1,6 @@
 # overtone-covers
 
-Collection of songs covered by [Overtone](https://github.com/overtone/overtone) and [Clojure](https://github.com/clojure/clojure).
+Collection of song covers created in [Overtone](https://github.com/overtone/overtone) and [Clojure](https://github.com/clojure/clojure).
 
 ## Requirements
 
@@ -16,7 +16,7 @@ Install [jack](https://github.com/overtone/overtone/wiki/Installing-and-starting
 
 ```clojure
 (use 'overtone.live)
-(use 'overtone-workshop.letsgo)
+(use 'overtone-covers.letsgo)
 (play-all)
 (stop)
 ```
@@ -25,7 +25,7 @@ Install [jack](https://github.com/overtone/overtone/wiki/Installing-and-starting
 
 ```clojure
 (use 'overtone.live)
-(use 'overtone-workshop.lights)
+(use 'overtone-covers.lights)
 (play-all)
 (stop)
 ```
